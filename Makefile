@@ -1,6 +1,6 @@
 up:
-	docker-compose down
-	docker-compose up -d
+	docker compose down
+	docker compose up -d
 	./create-datasource.sh
 	@echo
 	@echo
@@ -18,4 +18,4 @@ reload-prom:
 	curl -X POST http://localhost:9090/-/reload
 
 stop:
-	docker-compose down
+	docker compose down
