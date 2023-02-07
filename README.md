@@ -64,3 +64,39 @@ To push a metric in Prom-Stack, you can do something like this:
 `echo "mymetric 99" | curl --data-binary @- http://localhost:9091/metrics/job/my-push-job`
 
 You can confirm this has worked by navigating to the [Push Gateway](http://localhost:9091) UI or the [Prometheus](http://localhost:9090) expression browser.
+
+## Add node_exporter metrics
+
+Install node-exporter on ubuntu: `sudo apt update && sudo apt -y install prometheus-node-exporter`. Config file on Ubuntu located at `cat /etc/default/prometheus-node-exporter`
+
+then to add node-exporter running on the host system to the prometheus running in a container:
+```diff
+scrape_configs:
+  - job_name: 'prom-stack'
+    static_configs:
+      - targets:
+        - prometheus:9090
+        - pushgateway:9091
+        - alertmanager:9093
+        - grafana:3000
++       - host.docker.internal:9100
+```
+
+if want to run node-exporter in container then follow [this example](https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/), like:
+```yaml
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    expose:
+      - 9100
+```
