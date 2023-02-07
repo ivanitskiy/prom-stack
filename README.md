@@ -100,3 +100,6 @@ if want to run node-exporter in container then follow [this example](https://gra
     expose:
       - 9100
 ```
+
+You can import this node_exporter dashboard by ID `1860` or from https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+
