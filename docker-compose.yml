@@ -8,7 +8,7 @@ services:
 
   prometheus:
     image: prom/prometheus:v2.42.0
-    command: --config.file=/etc/prometheus/prometheus.yml
+    command: --config.file=/etc/prometheus/prometheus.yml --web.enable-lifecycle
     ports:
       - 9090:9090
     extra_hosts:
@@ -23,6 +23,9 @@ services:
       - 3000:3000
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=password
+    # to enable persistent storage in a volume
+    # volumes:
+    #   - grafana-storage:/var/lib/grafana
 
   alertmanager:
     image: prom/alertmanager:v0.25.0
@@ -31,3 +34,8 @@ services:
       - 9093:9093
     volumes:
       - ./alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+
+# volumes:
+#   # docker volume create grafana-storage
+#   grafana-storage:
+#     external: true

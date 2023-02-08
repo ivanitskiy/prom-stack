@@ -29,3 +29,7 @@ scrape_configs:
         - pushgateway:9091
         - alertmanager:9093
         - grafana:3000
+        # - host.docker.internal:9100 e.g. if node-exporter is
+        # add other targets
+        # - 172.26.8.165:9100 # node-exporter
+        # - 172.26.8.165:9256 # proc exporter

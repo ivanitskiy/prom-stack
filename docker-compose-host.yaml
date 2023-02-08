@@ -1,0 +1,32 @@
+version: "3"
+services:
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    expose:
+      - 9100:9100
+
+  process-exporter:
+    image: ncabatoff/process-exporter:0.7.10
+    container_name: process-exporter
+    restart: unless-stopped
+    command: --config.path=/etc/process-exporter/process-exporter.yml --procfs /host/proc -children=false
+    privileged: true
+    ports:
+      - 9256:9256
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    volumes:
+      - /proc:/host/proc:ro
+      - ./process-exporter/process-exporter.yml:/etc/process-exporter/process-exporter.yml
